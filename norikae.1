@@ -1,0 +1,58 @@
+.TH 乗換 1 norikae\-VERSION
+.SH ソフト名
+乗換 - CLIでの路線情報
+.SH 概要
+.B norikae
+[\fI\,オプション\/\fR] [\fI\,ほげほげ\/\fR]
+.SH 説明
+.PP
+CLIでの路線情報
+.TP
+\fB\-v\fR
+バージョンを表示
+.TP
+\fB\-h\fR
+ヘルプを表示
+.SH 必須のオプション
+.TP
+\fB\-f [駅名]\fR
+出社駅、例：秋葉原、渋谷、大手町（東京）
+.TP
+\fB\-t [駅名]\fR
+到着駅、例：秋葉原、渋谷、大手町（東京）
+.SH 任意のオプション
+.TP
+\fB\-n [YYYY-MM-DD]\fR
+年月日、ハイフン（-）で分けて、デフォルト＝今
+.TP
+\fB\-j [HH:MM]\fR
+時間、デフォルト＝今
+.TP
+\fB\-m [数字]\fR
+0 = 出発、1 = 指定なし、2 = 終電、3 = 始発、4 = 到着、デフォルト＝0
+.TP
+\fB\-r [数字]\fR
+0 = 到着が早い順、1 = 料金が高い順、2 = 乗り換え回数順、デフォルト＝0
+.TP
+\fB\--no-airplane\fR
+空路を省く
+.TP
+\fB\--no-shinkansen\fR
+新幹線を省く
+.TP
+\fB\--no-express\fR
+有料特急を省く
+.TP
+\fB\--no-expressbus\fR
+高速バスを省く
+.TP
+\fB\--no-bus\fR
+路線/連絡バスを省く
+.TP
+\fB\--no-ferry\fR
+フェリーを省く
+.SH バグ報告
+.PP
+バグは下記のURLまでご報告下さい：
+.br
+https://gitler.moe/suwako/norikae/issues

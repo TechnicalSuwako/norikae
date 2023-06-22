@@ -8,11 +8,6 @@ import (
 
 var version = "1.0.0"
 
-type Opts struct {
-  From, To, Date, Time, Mode, Route string
-  NoAirplane, NoShinkansen, NoExpress, NoExpressBus, NoBus, NoFairy bool
-}
-
 func help () {
   fmt.Println("使い方：")
   fmt.Println("norikae -v       ：バージョンを表示")
@@ -94,6 +89,6 @@ func main () {
   }
 
   gurl := geturl(opts)
-  fmt.Println(gurl)
-  //scrape(gurl)
+  route := scrape(gurl)
+  render(route)
 }

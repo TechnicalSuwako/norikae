@@ -3,66 +3,109 @@ package main
 import (
   "log"
   "net/http"
+  "time"
+  "net"
+  "fmt"
+  "strings"
 
   "github.com/gocolly/colly"
 )
 
-type (
-  Badge struct {
-    Text, Color string
-  }
-  Route struct {
-    Id, From, To, Duration, RideDuration, TransitCunt, Km string
-    Price, Sum int
-    Badges []Badge
-    Trains []Train
-  }
-  Stops struct {
-    Time, Name string
-  }
-  Train struct {
-    From, To, Name, LineColor, Station, LineName, FromTrack, ToTrack string
-    Stop []Stops
-  }
-  ScrapeData struct {
-    Err string
-  }
-)
-
-func scrape (gurl string) *ScrapeData {
-  var scrapeData *ScrapeData
-  var badge1, badge2, badge3 Badge
-  badge1.Text = "早"
-  badge1.Color = "#ff7e56"
-  badge2.Text = "楽"
-  badge2.Color = "#60bddb"
-  badge3.Text = "安"
-  badge3.Color = "#fab60a"
-  log.Println(gurl)
-
-  resp, err := http.Get(gurl)
-  if err != nil {
-    log.Fatal(err)
-  }
-  if resp.StatusCode == 404 {
-    log.Fatal("見つけられません。")
-  }
-
+func scrape (gurl string) []Route {
   ua := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
-  sc := colly.NewCollector(colly.AllowedDomains("transit.yahoo.co.jp"), colly.UserAgent(ua))
+  sc := colly.NewCollector(
+    colly.AllowURLRevisit(),
+    colly.Async(true),
+  )
 
-  sc.OnHTML("div.elmRouteDetail", func (e *colly.HTMLElement) {
-    log.Println(e.Attr("class"))
-    log.Println(e.Attr("id"))
-    if e.Attr("class") == "pos-im" {
-      return
-    }
-
-    e.ForEach("div", func (i int, el *colly.HTMLElement) {
-      log.Println("cunny")
-      //el.ClassText()
-    })
+  sc.WithTransport(&http.Transport {
+    Proxy: http.ProxyFromEnvironment,
+    DialContext: (&net.Dialer{
+      Timeout:   30 * time.Second,
+      KeepAlive: 30 * time.Second,
+      DualStack: true,
+    }).DialContext,
+    ForceAttemptHTTP2:     true,
+    MaxIdleConns:          100,
+    IdleConnTimeout:       90 * time.Second,
+    TLSHandshakeTimeout:   10 * time.Second,
+    ExpectContinueTimeout: 1 * time.Second,
   })
 
-  return scrapeData
+  sc.OnRequest(func(r *colly.Request) {
+    r.Headers.Set("User-Agent", ua)
+    r.Headers.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+    r.Headers.Set("Accept-Language", "en-US,en;q=0.5")
+  })
+
+  sc.OnError(func(_ *colly.Response, err error) {
+    log.Fatal("エラー：", err)
+  })
+
+  var routeArr []Route
+
+  for i := 1; i <= 3; i++ {
+    route := fmt.Sprintf("div#route%02d", i)
+    sc.OnHTML("div.elmRouteDetail " + route, func (e *colly.HTMLElement) {
+      Routes := Route{}
+      e.ForEach("dl.routeSummary ul.priority li span", func (j int, el *colly.HTMLElement) {
+        if el.Attr("class") == "icnPriTime" {
+          Routes.Badges = append(Routes.Badges, 1)
+        }
+        if el.Attr("class") == "icnPriFare" {
+          Routes.Badges = append(Routes.Badges, 2)
+        }
+        if el.Attr("class") == "icnPriTrans" {
+          Routes.Badges = append(Routes.Badges, 3)
+        }
+      })
+      base := e.ChildText("dl.routeSummary li.time span")
+      time := strings.ReplaceAll(base, e.ChildText("dl.routeSummary li.time span.small"), "")
+      time2 := strings.Split(time, "着")
+      Routes.Time = time2[0] + "着"
+
+      Routes.Duration = e.ChildText("dl.routeSummary li.time span.small")
+      Routes.TransitCunt = strings.ReplaceAll(e.ChildText("dl.routeSummary li.transfer"), "乗換：", "")
+      Routes.Fare = strings.ReplaceAll(e.ChildText("dl.routeSummary li.fare"), "[priic]IC優先：", "")
+      Stations := Station{}
+      Fares := Fare{}
+      Stops := Stop{}
+      e.ForEach("div.routeDetail div.station", func (j int, el *colly.HTMLElement) {
+        Stations.Time = el.ChildText("ul.time li")
+        if el.ChildText("p.icon span") == "[dep]" { Stations.Time += "発" }
+        if el.ChildText("p.icon span") == "[arr]" { Stations.Time += "着" }
+        Stations.Name = el.ChildText("dl dt a")
+        e.ForEach("div.routeDetail div.fareSection div.access", func (jf int, elf *colly.HTMLElement) {
+          Fares.Stops = nil
+          if jf == j {
+            Fares.Train = strings.ReplaceAll(elf.ChildText("li.transport div"), "[train]", "")
+            Fares.Platform = elf.ChildText("li.platform")
+            Fares.Color = strings.ReplaceAll(elf.ChildAttr("span", "style"), "border-color:#", "")
+            elf.ForEach("li.stop ul", func (js int, els *colly.HTMLElement) {
+              Stops.Time = els.ChildText("li dl dt")
+              Stops.Name = strings.ReplaceAll(els.ChildText("li dl dd"), "○", "")
+              Fares.Stops = append(Fares.Stops, Stops)
+            })
+            Stations.Fares = append(Stations.Fares, Fares)
+          }
+        })
+        e.ForEach("div.routeDetail div.walk ul.info", func (jw int, elw *colly.HTMLElement) {
+          if jw == j {
+            Fares.Train = strings.ReplaceAll(elw.ChildText("li.transport"), "[line][walk]", "")
+            Fares.Platform = ""
+            Fares.Color = "a8a8a8"
+            Stations.Fares = append(Stations.Fares, Fares)
+          }
+        })
+        Routes.Stations = append(Routes.Stations, Stations)
+      })
+
+      routeArr = append(routeArr, Routes)
+    })
+  }
+
+  sc.Visit(gurl)
+  sc.Wait()
+
+  return routeArr
 }
