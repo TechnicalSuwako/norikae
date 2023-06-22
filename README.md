@@ -7,3 +7,10 @@ cd norikae
 make
 doas make install
 ```
+
+### OpenIndianaの場合
+```sh
+cd norikae
+gmake
+sudo make install
+```

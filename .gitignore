@@ -1,7 +1,3 @@
-norikae
-norikae-linux
-norikae-freebsd
-norikae-openbsd
-norikae-netbsd
-norikae-solaris
 *.tar.gz
+bin
+norikae
