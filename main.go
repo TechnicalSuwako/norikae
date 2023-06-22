@@ -6,7 +6,7 @@ import (
   "time"
 )
 
-var version = "1.0.0"
+var version = "1.0.1"
 
 func help () {
   fmt.Println("使い方：")
@@ -55,6 +55,14 @@ func main () {
   for _, v := range os.Args {
     if (v == "-f") { foundf = true }
     if (v == "-t") { foundt = true }
+    if (v == "-v") {
+      fmt.Printf("norikae-%s\n", version)
+      return
+    }
+    if (v == "-h") {
+      help()
+      return
+    }
   }
 
   if !foundf || !foundt {
@@ -63,16 +71,6 @@ func main () {
   }
 
   for i := 1; i < len(os.Args); i++ {
-    if os.Args[i] == "-v" {
-      fmt.Printf("norikae-%s\n", version)
-      return
-    }
-
-    if os.Args[i] == "-h" {
-      help()
-      return
-    }
-
     if os.Args[i] == "-f" { opts.From  = os.Args[i+1] }
     if os.Args[i] == "-t" { opts.To    = os.Args[i+1] }
     if os.Args[i] == "-n" { opts.Date  = os.Args[i+1] }
