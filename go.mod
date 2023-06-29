@@ -1,4 +1,4 @@
-module norikae
+module 076/norikae
 
 go 1.20
 
