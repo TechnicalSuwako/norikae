@@ -1,11 +1,7 @@
 NAME=norikae
 VERSION := $(shell cat main.go | grep "var version" | awk '{print $$4}' | sed "s/\"//g")
-# Linux、Illumos
+# LinuxとIllumos＝/usr、FreeBSDとOpenBSD＝/usr/local、NetBSD＝/usr/pkg
 PREFIX=/usr
-# FreeBSDとOpenBSD
-#PREFIX=/usr/local
-# NetBSD
-#PREFIX=/usr/pkg
 MANPREFIX=${PREFIX}/share/man
 CC=CGO_ENABLED=0 go build
 # リリース。なし＝デバッグ。

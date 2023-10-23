@@ -48,7 +48,7 @@ func scrape (gurl string) []Route {
     route := fmt.Sprintf("div#route%02d", i)
     sc.OnHTML("div.elmRouteDetail " + route, func (e *colly.HTMLElement) {
       Routes := Route{}
-      e.ForEach("dl.routeSummary ul.priority li span", func (j int, el *colly.HTMLElement) {
+      e.ForEach("div.routeSummary div ul.priority li span", func (j int, el *colly.HTMLElement) {
         if el.Attr("class") == "icnPriTime" {
           Routes.Badges = append(Routes.Badges, 1)
         }
@@ -59,14 +59,17 @@ func scrape (gurl string) []Route {
           Routes.Badges = append(Routes.Badges, 3)
         }
       })
-      base := e.ChildText("dl.routeSummary li.time span")
-      time := strings.ReplaceAll(base, e.ChildText("dl.routeSummary li.time span.small"), "")
+      base := e.ChildText("ul.summary li.time span")
+      time := strings.ReplaceAll(base, e.ChildText("ul.summary li.time span.small"), "")
       time2 := strings.Split(time, "着")
       Routes.Time = time2[0] + "着"
+      durabase := e.ChildText("ul.summary li.time")
+      durasi := strings.Index(durabase, "着") + len("着")
+      duraei := strings.Index(durabase[durasi:], "分") + len("分") + durasi
 
-      Routes.Duration = e.ChildText("dl.routeSummary li.time span.small")
-      Routes.TransitCunt = strings.ReplaceAll(e.ChildText("dl.routeSummary li.transfer"), "乗換：", "")
-      Routes.Fare = strings.ReplaceAll(e.ChildText("dl.routeSummary li.fare"), "[priic]IC優先：", "")
+      Routes.Duration = durabase[durasi:duraei]
+      Routes.TransitCunt = strings.ReplaceAll(e.ChildText("ul.summary li.transfer"), "乗換：", "")
+      Routes.Fare = strings.ReplaceAll(e.ChildText("ul.summary li.fare"), "[priic]IC優先：", "")
       Stations := Station{}
       Fares := Fare{}
       Stops := Stop{}

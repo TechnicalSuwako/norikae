@@ -32,7 +32,7 @@ func render (route []Route) {
         badges += "〈" + b3 + "〉"
       }
     }
-    fmt.Println(value.Time + " (" + value.Duration + "), " + value.Fare + ", 乗換：" + value.TransitCunt + " " + badges)
+    fmt.Println(value.Time + " (" + value.Duration + "), " + value.Fare + ", 乗換数：" + value.TransitCunt + " " + badges)
     for k, v := range value.Stations {
       fmt.Println(v.Time + " " + v.Name)
       for i, fare := range v.Fares {
