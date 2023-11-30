@@ -57,7 +57,7 @@ install: all
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/${NAME}.1
 
 uninstall:
-	rm -f ${DESTDIOR}${PREFIX}/bin/${NAME}\
+	rm -f ${DESTDIR}${PREFIX}/bin/${NAME}\
 		${DESTDIR}${MANPREFIX}/man1/${NAME}.1
 
 .PHONY: all release clean dist install uninstall

@@ -9,6 +9,9 @@ import (
 var version = "1.0.2"
 
 func help () {
+  fmt.Println("０７６ 乗換 - CLIでの路線情報")
+  fmt.Println("https://076.moe/ | https://gitler.moe/suwako/norikae")
+  fmt.Println("")
   fmt.Println("使い方：")
   fmt.Println("norikae -v       ：バージョンを表示")
   fmt.Println("norikae -h       ：ヘルプを表示")
