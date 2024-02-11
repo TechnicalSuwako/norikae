@@ -6,15 +6,15 @@ import (
   "time"
 )
 
-var version = "1.0.2"
+var sofname = "norikae"
+var version = "1.1.0"
 
 func help () {
   fmt.Println("０７６ 乗換 - CLIでの路線情報")
   fmt.Println("https://076.moe/ | https://gitler.moe/suwako/norikae")
-  fmt.Println("")
-  fmt.Println("使い方：")
-  fmt.Println("norikae -v       ：バージョンを表示")
-  fmt.Println("norikae -h       ：ヘルプを表示")
+  fmt.Println("\n使い方：")
+  fmt.Println("-v               ：バージョンを表示")
+  fmt.Println("-h               ：ヘルプを表示")
   fmt.Println("\n【必須のオプション】")
   fmt.Println("-f [出発駅]      ：例：秋葉原、渋谷、大手町（東京）")
   fmt.Println("-t [到着駅]      ：例：秋葉原、渋谷、大手町（東京）")
@@ -29,11 +29,10 @@ func help () {
   fmt.Println("--no-expressbus  ：高速バスを省く")
   fmt.Println("--no-bus         ：路線/連絡バスを省く")
   fmt.Println("--no-ferry       ：フェリーを省く")
-  fmt.Println("\n例： norikae -f 秋葉原 -t 渋谷 -j 16:23 -m 4 --no-bus")
+  fmt.Println("\n例： " + sofname + " -f 秋葉原 -t 渋谷 -j 16:23 -m 4 --no-bus")
 }
 
 func main () {
-  //args := os.Args
   var opts Opts
   // デフォルトな値
   t := time.Now()
@@ -59,7 +58,7 @@ func main () {
     if (v == "-f") { foundf = true }
     if (v == "-t") { foundt = true }
     if (v == "-v") {
-      fmt.Printf("norikae-%s\n", version)
+      fmt.Printf("%s-%s\n", sofname, version)
       return
     }
     if (v == "-h") {

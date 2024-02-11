@@ -81,7 +81,8 @@ func scrape (gurl string) []Route {
         e.ForEach("div.routeDetail div.fareSection div.access", func (jf int, elf *colly.HTMLElement) {
           Fares.Stops = nil
           if jf == j {
-            Fares.Train = strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(elf.ChildText("li.transport div"), "[train]", "【電車】"), "[bus]", "【バス】"), "[air]", "【空路】")
+            Fares.Train = strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(elf.ChildText("li.transport div"), "[train]", "【電車】"), "[bus]", "【バス】"), "[air]", "【空路】"), "当駅始発", "【当駅始発】") + "　"
+
             Fares.Platform = elf.ChildText("li.platform")
             Fares.Color = strings.ReplaceAll(elf.ChildAttr("span", "style"), "border-color:#", "")
             elf.ForEach("li.stop ul", func (js int, els *colly.HTMLElement) {
