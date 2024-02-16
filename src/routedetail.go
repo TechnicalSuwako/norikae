@@ -16,8 +16,14 @@ func getSummary(i int, e *colly.HTMLElement) Route {
 }
 
 func handleFare(el *colly.HTMLElement, f Fare, s Stop) Fare {
-  f.Train = strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(strings.ReplaceAll(el.ChildText("li.transport div"), "[train]", "【電車】"), "[bus]", "【バス】"), "[air]", "【空路】"), "当駅始発", "【当駅始発】") + "　"
+  fixTrain := strings.ReplaceAll(
+    el.ChildText("li.transport div"), "[train]", "【電車】",
+  )
+  fixBus := strings.ReplaceAll(fixTrain, "[bus]", "【バス】")
+  fixAir := strings.ReplaceAll(fixBus, "[air]", "【空路】")
+  fixEki := strings.ReplaceAll(fixAir, "当駅始発", "【当駅始発】")
 
+  f.Train = fixEki
   f.Platform = el.ChildText("li.platform")
   f.Color = strings.ReplaceAll(el.ChildAttr("span", "style"), "border-color:#", "")
   el.ForEach("li.stop ul", func (js int, els *colly.HTMLElement) {
