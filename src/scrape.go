@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
   "log"
@@ -11,7 +11,7 @@ import (
   "github.com/gocolly/colly"
 )
 
-func scrape (gurl string) []Route {
+func Scrape (gurl string) []Route {
   ua := "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36"
   sc := colly.NewCollector(
     colly.AllowURLRevisit(),

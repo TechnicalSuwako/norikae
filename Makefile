@@ -44,7 +44,7 @@ clean:
 dist: clean
 	mkdir -p ${NAME}-${VERSION}
 	cp -R LICENSE.txt Makefile README.md CHANGELOG.md\
-		${NAME}.1 *.go go.mod go.sum ${NAME}-${VERSION}
+		${NAME}.1 main.go src go.mod go.sum ${NAME}-${VERSION}
 	tar zcfv ${NAME}-${VERSION}.tar.gz ${NAME}-${VERSION}
 	rm -rf ${NAME}-${VERSION}
 

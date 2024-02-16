@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
   "fmt"
@@ -6,7 +6,7 @@ import (
   "github.com/gookit/color"
 )
 
-func render (route []Route) {
+func Render (route []Route) {
   var r, g, b uint8
   col := "fcfcfc"
   fmt.Sscanf("ff7e56", "%2x%2x%2x", &r, &g, &b)

@@ -1,4 +1,4 @@
-package main
+package src
 
 import (
   "strings"
@@ -10,7 +10,7 @@ func b2s (val bool) string {
   return "0"
 }
 
-func geturl (f Opts) string {
+func GetUrl (f Opts) (string, error) {
   date := strings.Split(f.Date, "-")
   year := date[0]
   month := date[1]
@@ -22,5 +22,5 @@ func geturl (f Opts) string {
 
   curl, _ := url.Parse("https://transit.yahoo.co.jp/search/result?from=" + url.QueryEscape(f.From) + "&to=" + url.QueryEscape(f.To) + "&y=" + year + "&m=" + month + "&d=" + day + "&hh=" + hour + "&m1=" + m1 + "&m2=" + m2 + "&type=" + f.Mode + "&ticket=ic&expkind=1&userpass=1&ws=" + f.Route + "&al=" + b2s(f.NoAirplane) + "&shin=" + b2s(f.NoShinkansen) + "&ex=" + b2s(f.NoExpress) + "&hb=" + b2s(f.NoExpressBus) + "&lb=" + b2s(f.NoBus) + "&sr=" + b2s(f.NoFairy))
 
-  return curl.String()
+  return curl.String(), nil
 }
