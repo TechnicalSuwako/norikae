@@ -83,18 +83,16 @@ func getRouteDetail(e *colly.HTMLElement) Route {
     onDivs = "div.routeDetail div.fareSection div.access"
     e.ForEach(onDivs, func (jf int, elf *colly.HTMLElement) {
       Fares.Stops = nil
-      if jf == j {
-        f := handleFare(elf, Fares, Stops)
-        Stations.Fares = append(Stations.Fares, f)
-      }
+      if jf != j { return }
+      f := handleFare(elf, Fares, Stops)
+      Stations.Fares = append(Stations.Fares, f)
     })
 
     onDivs = "div.routeDetail div.walk ul.info"
     e.ForEach(onDivs, func (jw int, elw *colly.HTMLElement) {
-      if jw == j {
-        f := handleWalk(elw, Fares)
-        Stations.Fares = append(Stations.Fares, f)
-      }
+      if jw != j { return }
+      f := handleWalk(elw, Fares)
+      Stations.Fares = append(Stations.Fares, f)
     })
     r.Stations = append(r.Stations, Stations)
   })
