@@ -8,9 +8,9 @@ make
 doas make install
 ```
 
-### OpenIndianaの場合
+### Linuxの場合
 ```sh
 cd norikae
-gmake
-sudo make install
+bmake
+doas bmake install
 ```
