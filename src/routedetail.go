@@ -2,6 +2,7 @@ package src
 
 import (
   "strings"
+  "regexp"
 
   "github.com/gocolly/colly"
 )
@@ -23,12 +24,15 @@ func handleFare(el *colly.HTMLElement, f Fare, s Stop) Fare {
   fixAir := strings.ReplaceAll(fixBus, "[air]", "【空路】")
   fixEki := strings.ReplaceAll(fixAir, "当駅始発", "【当駅始発】")
 
+  pattern := regexp.MustCompile(`(線)([^\s行]*行)`)
+
   f.Train = fixEki
   f.Platform = el.ChildText("li.platform")
   f.Color = strings.ReplaceAll(el.ChildAttr("span", "style"), "border-color:#", "")
   el.ForEach("li.stop ul", func (js int, els *colly.HTMLElement) {
     s.Time = els.ChildText("li dl dt")
-    s.Name = strings.ReplaceAll(els.ChildText("li dl dd"), "○", "")
+    sname := strings.ReplaceAll(els.ChildText("li dl dd"), "○", "")
+    s.Name = pattern.ReplaceAllString(sname, "$1　$2")
     f.Stops = append(f.Stops, s)
   })
 
