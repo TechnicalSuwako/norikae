@@ -58,7 +58,7 @@ release:
 		release/bin/${NAME}-${VERSION}-illumos-amd64
 
 clean:
-	rm -f ${NAME} ${NAME}-${VERSION}.tar.gz
+	rm -f ${NAME}
 
 dist: clean
 	mkdir -p ${NAME}-${VERSION} release/src

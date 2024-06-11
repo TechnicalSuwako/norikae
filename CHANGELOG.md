@@ -2,6 +2,7 @@
 * GNU Make → BSD Make
 * GPLv2 → ISC
 * 「--no-」のオプションの変更
+* help → usage
 
 # 1.0.2
 * ヤフー社はHTMLをちょっと更新されたから、乗換を修正する事が必要となった
