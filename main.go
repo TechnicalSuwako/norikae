@@ -26,13 +26,13 @@ func help () {
     "0 = 出発、1 = 指定なし、2 = 終電、3 = 始発、4 = 到着（デフォルト：0）")
   fmt.Println("-r [0〜2]\n\t" +
     "0 = 到着が早い順、1 = 料金が高い順、2 = 乗り換え回数順（デフォルト：0）")
-  fmt.Println("\n--no-airplane\n\t空路を省く")
-  fmt.Println("--no-shinkansen\n\t新幹線を省く")
-  fmt.Println("--no-express\n\t有料特急を省く")
-  fmt.Println("--no-expressbus\n\t高速バスを省く")
-  fmt.Println("--no-bus\n\t路線/連絡バスを省く")
-  fmt.Println("--no-ferry\n\tフェリーを省く")
-  fmt.Println("\n例： " + sofname + " -f 秋葉原 -t 渋谷 -j 16:23 -m 4 --no-bus")
+  fmt.Println("\n-A\n\t空路を省く")
+  fmt.Println("-S\n\t新幹線を省く")
+  fmt.Println("-E\n\t有料特急を省く")
+  fmt.Println("-X\n\t高速バスを省く")
+  fmt.Println("-B\n\t路線/連絡バスを省く")
+  fmt.Println("-F\n\tフェリーを省く")
+  fmt.Println("\n例： " + sofname + " -f 秋葉原 -t 渋谷 -j 16:23 -m 4 -B")
 }
 
 func main () {
@@ -83,22 +83,22 @@ func main () {
     if os.Args[i] == "-m" { opts.Mode  = os.Args[i+1] }
     if os.Args[i] == "-r" { opts.Route = os.Args[i+1] }
 
-    if os.Args[i] == "--no-airplane" {
+    if os.Args[i] == "-A" {
       opts.NoAirplane = false
     }
-    if os.Args[i] == "--no-shinkansen" {
+    if os.Args[i] == "-S" {
       opts.NoShinkansen = false
     }
-    if os.Args[i] == "--no-express" {
+    if os.Args[i] == "-E" {
       opts.NoExpress = false
     }
-    if os.Args[i] == "--no-expressbus" {
+    if os.Args[i] == "-X" {
       opts.NoExpressBus = false
     }
-    if os.Args[i] == "--no-bus" {
+    if os.Args[i] == "-B" {
       opts.NoBus = false
     }
-    if os.Args[i] == "--no-ferry" {
+    if os.Args[i] == "-F" {
       opts.NoFairy = false
     }
   }
