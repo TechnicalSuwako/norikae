@@ -58,12 +58,16 @@ release:
 clean:
 	rm -f ${NAME}
 
-dist: clean
+dist:
 	mkdir -p ${NAME}-${VERSION} release/src
 	cp -R LICENSE.txt Makefile README.md CHANGELOG.md\
 		${NAME}.1 main.go src go.mod go.sum ${NAME}-${VERSION}
 	tar zcfv release/src/${NAME}-${VERSION}.tar.gz ${NAME}-${VERSION}
 	rm -rf ${NAME}-${VERSION}
+
+man:
+	mkdir -p release/man
+	sed "s/VERSION/${VERSION}/g" < ${NAME}.1 > release/man/${NAME}.1
 
 install:
 	mkdir -p ${DESTDIR}${PREFIX}/bin
@@ -77,4 +81,4 @@ uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/${NAME}\
 		${DESTDIR}${MANPREFIX}/man1/${NAME}.1
 
-.PHONY: all release clean dist install uninstall
+.PHONY: all release clean dist man install uninstall
