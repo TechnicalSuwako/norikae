@@ -67,7 +67,7 @@ dist:
 
 man:
 	mkdir -p release/man
-	sed "s/VERSION/${VERSION}/g" < ${NAME}.1 > release/man/${NAME}.1
+	sed "s/VERSION/${VERSION}/g" < ${NAME}.1 > release/man/${NAME}-${VERSION}.1
 
 install:
 	mkdir -p ${DESTDIR}${PREFIX}/bin
