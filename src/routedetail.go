@@ -7,7 +7,7 @@ import (
   "github.com/gocolly/colly"
 )
 
-func getSummary(i int, e *colly.HTMLElement) Route {
+func getSummary(e *colly.HTMLElement) Route {
   r := Route{}
   if e.Attr("class") == "icnPriTime"  { r.Badges = append(r.Badges, 1) }
   if e.Attr("class") == "icnPriFare"  { r.Badges = append(r.Badges, 2) }
@@ -23,16 +23,16 @@ func handleFare(el *colly.HTMLElement, f Fare, s Stop) Fare {
   fixBus := strings.ReplaceAll(fixTrain, "[bus]", "【バス】")
   fixAir := strings.ReplaceAll(fixBus, "[air]", "【空路】")
   fixEki := strings.ReplaceAll(fixAir, "当駅始発", "【当駅始発】")
+  pattern := regexp.MustCompile(`(^.*線)(.*[行|方面]$)`)
 
-  pattern := regexp.MustCompile(`(線)([^\s行]*行)`)
+  fixeki := pattern.ReplaceAllString(fixEki, "$1　$2")
 
-  f.Train = fixEki
+  f.Train = fixeki
   f.Platform = el.ChildText("li.platform")
   f.Color = strings.ReplaceAll(el.ChildAttr("span", "style"), "border-color:#", "")
   el.ForEach("li.stop ul", func (js int, els *colly.HTMLElement) {
     s.Time = els.ChildText("li dl dt")
-    sname := strings.ReplaceAll(els.ChildText("li dl dd"), "○", "")
-    s.Name = pattern.ReplaceAllString(sname, "$1　$2")
+    s.Name = strings.ReplaceAll(els.ChildText("li dl dd"), "○", "")
     f.Stops = append(f.Stops, s)
   })
 
@@ -53,7 +53,7 @@ func getRouteDetail(e *colly.HTMLElement) Route {
   r := Route{}
   onDivs := "div.routeSummary div ul.priority li span"
   e.ForEach(onDivs, func(i int, el *colly.HTMLElement) {
-    summary := getSummary(i, el)
+    summary := getSummary(el)
     r.Badges = append(r.Badges, summary.Badges...)
   })
 
