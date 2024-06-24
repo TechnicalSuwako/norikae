@@ -73,32 +73,31 @@ func getRouteDetail(e *colly.HTMLElement) Route {
     e.ChildText("ul.summary li.fare"), "[priic]IC優先：", "",
   )
 
-  Stations := Station{}
-  Fares := Fare{}
-  Stops := Stop{}
-
   onDivs = "div.routeDetail div.station"
   e.ForEach(onDivs, func (j int, el *colly.HTMLElement) {
-    Stations.Time = el.ChildText("ul.time li")
-    if el.ChildText("p.icon span") == "[dep]" { Stations.Time += "発" }
-    if el.ChildText("p.icon span") == "[arr]" { Stations.Time += "着" }
-    Stations.Name = el.ChildText("dl dt a")
+    station := Station{}
+    station.Time = el.ChildText("ul.time li")
+    if el.ChildText("p.icon span") == "[dep]" { station.Time += "発" }
+    if el.ChildText("p.icon span") == "[arr]" { station.Time += "着" }
+    station.Name = el.ChildText("dl dt a")
 
+    fares := []Fare{}
     onDivs = "div.routeDetail div.fareSection div.access"
     e.ForEach(onDivs, func (jf int, elf *colly.HTMLElement) {
-      Fares.Stops = nil
-      if jf != j { return }
-      f := handleFare(elf, Fares, Stops)
-      Stations.Fares = append(Stations.Fares, f)
+      fare := Fare{}
+      fare = handleFare(elf, fare, Stop{})
+      fares = append(fares, fare)
     })
 
     onDivs = "div.routeDetail div.walk ul.info"
     e.ForEach(onDivs, func (jw int, elw *colly.HTMLElement) {
-      if jw != j { return }
-      f := handleWalk(elw, Fares)
-      Stations.Fares = append(Stations.Fares, f)
+      fare := Fare{}
+      fare = handleWalk(elw, fare)
+      fares = append(fares, fare)
     })
-    r.Stations = append(r.Stations, Stations)
+
+    station.Fares = fares
+    r.Stations = append(r.Stations, station)
   })
 
   return r

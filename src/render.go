@@ -2,49 +2,46 @@ package src
 
 import (
   "fmt"
-
-  "github.com/gookit/color"
 )
 
 var r, g, b uint8
 var col string
 
 func getFares(v Station, k int) {
-  c := color.RGB(uint8(r), uint8(g), uint8(b)).Sprint("")
+	for i, fare := range v.Fares {
+		if k != i {
+			continue
+		}
 
-  for i, fare := range v.Fares {
-    if k != i { continue }
+		col = fare.Color
+		fmt.Sscanf(col, "%2x%2x%2x", &r, &g, &b)
+		text := fare.Train
 
-    col = fare.Color
-    fmt.Sscanf(col, "%2x%2x%2x", &r, &g, &b)
-    text := fare.Train
+		if fare.Platform != "" {
+			text += "\n" + fare.Platform
+		}
 
-    if fare.Platform != "" { text += "\n" + fare.Platform }
-    c = color.RGB(uint8(r), uint8(g), uint8(b)).Sprint(text)
-    fmt.Println(c)
-  }
+		c := fmt.Sprintf("\x1b[38;2;%d;%d;%dm%s\x1b[0m", r, g, b, text)
+		fmt.Println(c)
+	}
 }
 
 func Render (route []Route) {
   col = "fcfcfc"
 
-  fmt.Sscanf("ff7e56", "%2x%2x%2x", &r, &g, &b)
-  b1 := color.RGB(uint8(r), uint8(g), uint8(b)).Sprint("早")
+	fmt.Sscanf("ff7e56", "%2x%2x%2x", &r, &g, &b)
+	b1 := fmt.Sprintf("\x1b[38;2;%d;%d;%dm%s\x1b[0m", r, g, b, "早")
 
-  fmt.Sscanf("60bddb", "%2x%2x%2x", &r, &g, &b)
-  b2 := color.RGB(uint8(r), uint8(g), uint8(b)).Sprint("楽")
+	fmt.Sscanf("60bddb", "%2x%2x%2x", &r, &g, &b)
+	b2 := fmt.Sprintf("\x1b[38;2;%d;%d;%dm%s\x1b[0m", r, g, b, "楽")
 
-  fmt.Sscanf("fab60a", "%2x%2x%2x", &r, &g, &b)
-  b3 := color.RGB(uint8(r), uint8(g), uint8(b)).Sprint("安")
+	fmt.Sscanf("fab60a", "%2x%2x%2x", &r, &g, &b)
+	b3 := fmt.Sprintf("\x1b[38;2;%d;%d;%dm%s\x1b[0m", r, g, b, "安")
 
   fmt.Sscanf(col, "%2x%2x%2x", &r, &g, &b)
 
   for key, value := range route {
-    color.Style{
-      color.FgBlack,
-      color.BgMagenta,
-      color.OpBold,
-    }.Println("# ルート" + fmt.Sprintf("%d", key+1))
+		fmt.Printf("\x1b[1;35m# ルート%d\x1b[0m\n", key+1)
 
     badges := ""
     for _, badge := range value.Badges {
